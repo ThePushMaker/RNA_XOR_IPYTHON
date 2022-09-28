@@ -41,6 +41,21 @@
           )
         );
 
+      function transpose(matrix) {
+        const rows = matrix.length,
+          cols = matrix[0].length;
+        const grid = [];
+        for (let j = 0; j < cols; j++) {
+          grid[j] = Array(rows);
+        }
+        for (let i = 0; i < rows; i++) {
+          for (let j = 0; j < cols; j++) {
+            grid[j][i] = matrix[i][j];
+          }
+        }
+        return grid;
+      }
+
       class neuralNetwork {
         constructor(input_nodes, hidden_nodes, output_nodes, learning_rate) {
           //initialisation
@@ -72,33 +87,31 @@
         }
 
         query(inputs_list) {
+          let inputs = inputs_list; //pendiente convertir a arreglo 2d
+          transpose(inputs);
+          console.log("transpose: " + inputs);
+          inputs.reshape(3, 1); // Reshape array in-place.
+          console.log(inputs);
 
-            let inputs=[];
-            while(inputs_list.length) inputs.push(inputs_list.splice(0,3));
+          //hidden capa
+          //Multiplicación de matrices
+          let hidden_inputs = MatrixProd(this.wih, inputs);
+          console.log("dot hidden_inputs: " + hidden_inputs);
 
-            console.log(inputs)
-            inputs= inputs_list//pendiente convertir a arreglo 2d
-            
-            //hidden capa
-            //Multiplicación de matrices
-            let hidden_inputs = MatrixProd(this.wih, inputs);
-            console.log("dot hidden_inputs: "+hidden_inputs);
-            
-            //funcion sigmoide
-            let hidden_outputs = sigmoid(hidden_inputs);
-            console.log("hidden_sigmoide: "+hidden_outputs);
-            
-            
-            //final capa
-            //Multiplicación de matrices
-            let final_inputs =  MatrixProd(this.who, hidden_outputs);
-            console.log("dot final_inputs: "+hidden_inputs);
-            
-            //funcion sigmoide
+          //funcion sigmoide
+          let hidden_outputs = sigmoid(hidden_inputs);
+          console.log("hidden_sigmoide: " + hidden_outputs);
+
+          //final capa
+          //Multiplicación de matrices
+          let final_inputs = MatrixProd(this.who, hidden_outputs);
+          console.log("dot final_inputs: " + hidden_inputs);
+
+          //funcion sigmoide
           let final_outputs = sigmoid(hidden_inputs);
-          console.log("final_sigmoide: "+hidden_outputs);
+          console.log("final_sigmoide: " + hidden_outputs);
 
-          return
+          return final_outputs;
         }
       }
 
@@ -115,7 +128,23 @@
         output_nodes,
         learning_rate
       );
-      
+
+      Array.prototype.reshape = function (rows, cols) {
+        var copy = this.slice(0); // Copy all elements.
+        this.length = 0; // Clear out existing array.
+
+        for (var r = 0; r < rows; r++) {
+          var row = [];
+          for (var c = 0; c < cols; c++) {
+            var i = r * cols + c;
+            if (i < copy.length) {
+              row.push(copy[i]);
+            }
+          }
+          this.push(row);
+        }
+      };
+
       n.query([1.0, 0.5, -1.5]);
       console.log();
 
