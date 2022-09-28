@@ -1,180 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <p> <span id="input"></span></p>
+    <title>Document</title>
+  </head>
+  <body>
+    <p><span id="input"></span></p>
 
     <script>
-        function createGround(width, height,min, max){
-            var result = [];
-            for (var i = 0 ; i < width; i++) {
-                result[i] = [];
-                for (var j = 0; j < height; j++) {
-                    result[i][j] = ((Math.random() * parseFloat(max-min))+parseFloat(min));
-                }
-            }
-            return result;
+      function generar_pesos(width, height, min, max) {
+        var result = [];
+        for (var i = 0; i < width; i++) {
+          result[i] = [];
+          for (var j = 0; j < height; j++) {
+            result[i][j] =
+              Math.random() * parseFloat(max - min) + parseFloat(min);
+          }
+        }
+        return result;
+      }
+
+      function sigmoid(x) {
+        const e = 2.71828;
+        return 1 / (1 + Math.pow(e, -x));
+      }
+
+      function display(m) {
+        for (var r = 0; r < m.length; ++r) {
+          document.write("&nbsp;&nbsp;" + m[r].join(" ") + "<br />");
+        }
+      }
+
+      let MatrixProd = (A, B) =>
+        A.map((row, i) =>
+          B[0].map((_, j) =>
+            row.reduce((acc, _, n) => acc + A[i][n] * B[n][j], 0)
+          )
+        );
+
+      class neuralNetwork {
+        constructor(input_nodes, hidden_nodes, output_nodes, learning_rate) {
+          //initialisation
+          this.input_nodes = input_nodes;
+          this.hidden_nodes = hidden_nodes;
+          this.output_nodes = output_nodes;
+
+          this.learning_rate = learning_rate;
+
+          //generar pesos a capas
+          this.wih = generar_pesos(
+            this.hidden_nodes,
+            this.input_nodes,
+            -0.5,
+            0.5
+          );
+          console.log("wih: " + this.wih);
+          this.who = generar_pesos(
+            this.hidden_nodes,
+            this.output_nodes,
+            -0.5,
+            0.5
+          );
+          console.log("who: " + this.who);
         }
 
-
-        class neuralNetwork {
-            constructor(input_nodes, hidden_nodes, output_nodes, learning_rate) { //initialisation
-                this.input_nodes = input_nodes;
-                this.hidden_nodes = hidden_nodes;
-                this.output_nodes = output_nodes;
-                
-                this.learning_rate = learning_rate;
-
-                //generar pesos a capas
-                this.wih= createGround(this.hidden_nodes, this.input_nodes, -.5, .5);
-                this.who= createGround(this.hidden_nodes, this.output_nodes, -.5, .5);
-            }
-
-            train () {
-                return 
-            }
-
-            query () {
-                return 
-            }
+        train() {
+          return;
         }
 
-        
-        // Establecer propiedades de red
-        let input_nodes=3;
-        let hidden_nodes=3;
-        let output_nodes=3;
-        let learning_rate=0.3;
+        query(inputs_list) {
 
-        // Crear instancia de la red
-        let n= new neuralNetwork(input_nodes,hidden_nodes,output_nodes, learning_rate);
-         
-        
-        
-        console.log(weights)
+            let inputs=[];
+            while(inputs_list.length) inputs.push(inputs_list.splice(0,3));
 
+            console.log(inputs)
+            inputs= inputs_list//pendiente convertir a arreglo 2d
+            
+            //hidden capa
+            //Multiplicación de matrices
+            let hidden_inputs = MatrixProd(this.wih, inputs);
+            console.log("dot hidden_inputs: "+hidden_inputs);
+            
+            //funcion sigmoide
+            let hidden_outputs = sigmoid(hidden_inputs);
+            console.log("hidden_sigmoide: "+hidden_outputs);
+            
+            
+            //final capa
+            //Multiplicación de matrices
+            let final_inputs =  MatrixProd(this.who, hidden_outputs);
+            console.log("dot final_inputs: "+hidden_inputs);
+            
+            //funcion sigmoide
+          let final_outputs = sigmoid(hidden_inputs);
+          console.log("final_sigmoide: "+hidden_outputs);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-        function sigmoid(x){
-            const e=2.71828;
-            return 1/(1+(Math.pow(e,-x)));
+          return
         }
+      }
 
+      // Establecer propiedades de red
+      let input_nodes = 3;
+      let hidden_nodes = 3;
+      let output_nodes = 3;
+      let learning_rate = 0.3;
 
-        // let pesos=[getRandomNum(1.0), getRandomNum(1.0), getRandomNum(1.0),  getRandomNum(1.0)];
-        // let pesos=[
-        //     [0.9, 0.2],
-        //     [ 0.3, 0.8]
-        // ];
-        let inputs=[0.9,0.1,0.8];
-        let w_input_hidden=[ //input_hidden
-            [0.9,0.3,0.4],
-            [0.2,0.8,0.2],
-            [0.1,0.5,0.6]
-        ]
-        let w_hidden_input=[
-            [0.3,0.7,0.5],
-            [0.6, 0.5, 0.2],
-            [0.8, 0.1, 0.9]
-        ]
+      // Crear instancia de la red
+      let n = new neuralNetwork(
+        input_nodes,
+        hidden_nodes,
+        output_nodes,
+        learning_rate
+      );
+      
+      n.query([1.0, 0.5, -1.5]);
+      console.log();
 
-        let o=[]; //Funciones de activación
+      // console.log("----------------- Operaciones Capa Oculta ----------------");
+      // for(j=0 ; j<nodosEntrada.length; j++){
+      //     console.log("Entrada["+j+"]")
+      //     let y=0.0;
+      //     let x=0.0;
+      //     let multiplicacion=0.0;
 
-        for(i=0;i<inputs.length;i++){
-            for(j=0;j<inputs.length;j++){
-                x_hidden=w_input_hidden[i]*inputs[i];
-            }
-        }
-        console.log("xh="+x_hidden)
+      //     for (i=0; i<2; i++){
+      //         multiplicacion=(nodosEntrada[i]*pesos[i][j])
+      //         x=multiplicacion+x;
+      //     }
 
-        // for (i=0; i<pesos.length; i++){
-        //     console.log("Peso"+Number(i)+": "+pesos[i]);
-        // }
+      //     console.log("x="+x);
+      //     // console.log("----------------- Función de activación ----------------");
+      //     y = sigmoid(x);
+      //     console.log("y="+y);
+      //     o.push(y);
+      // }
+      //     console.log("o="+o);
 
-        
-        // console.log("----------------- Nodos de Entrada ----------------");
-        // //Capa de entrada
-        // let nodosEntrada=[];
-        // nodosEntrada[0]=1.0;
-        // nodosEntrada[1]=0.5;
-        
-        // let nodosCapa2=[];
-        // nodosCapa2[0]=0;
-        // nodosCapa2[1]=0;
-        // for (i=0; i<nodosEntrada.length; i++){
-        //     console.log("Nodo"+Number(i)+": "+nodosEntrada[i]);
-        // }
+      // console.log("----------------- Salidas ----------------");
 
-        // // function OperacionNodos(SalidaNodos, pesoEnlaces){
+      // for(i=0 ; i<2 ; i++){
+      //     nodos[i]=1;
+      // }
 
-        // // }
+      //Capa 2
 
-        // console.log("----------------- Operaciones Capa Oculta ----------------");
-        // for(j=0 ; j<nodosEntrada.length; j++){
-        //     console.log("Entrada["+j+"]")
-        //     let y=0.0;
-        //     let x=0.0; 
-        //     let multiplicacion=0.0;
+      //capa salida
 
-        //     for (i=0; i<2; i++){
-        //         multiplicacion=(nodosEntrada[i]*pesos[i][j])
-        //         x=multiplicacion+x;
-        //     }
-
-        //     console.log("x="+x);
-        //     // console.log("----------------- Función de activación ----------------");
-        //     y = sigmoid(x);
-        //     console.log("y="+y);
-        //     o.push(y);
-        // }
-        //     console.log("o="+o);
-        
-        
-
-        // console.log("----------------- Salidas ----------------");
-
-        // for(i=0 ; i<2 ; i++){
-        //     nodos[i]=1;
-        // }
-        
-
-        //Capa 2
-
-
-        //capa salida
-
-
-        // document.getElementById('input').innerHTML = w1+","+w2;
-
+      // document.getElementById('input').innerHTML = w1+","+w2;
     </script>
-    
-</body>
+  </body>
 </html>
