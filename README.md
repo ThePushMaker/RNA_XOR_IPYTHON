@@ -12,4 +12,4 @@ Materia: RNA
 Descripción: Red neuronal multicapa programada en javascript para darle solución al problema XOR
 
 
-Favor de revisar la consola del navegador para ver los resultados impresos de la ejecución.
+Abrir archivo index en el navegaro. Favor de revisar la consola del navegador para ver los resultados impresos de la ejecución.
