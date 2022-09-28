@@ -1,4 +1,4 @@
-# RNA_XOR_JS
+# RNA_XOR_IPYTHON
 
 Estudiante: Martín Samuel Calderón Ojeda
 
@@ -9,7 +9,4 @@ Semestre: 9
 Materia: RNA
 
 
-Descripción: Red neuronal multicapa programada en javascript para darle solución al problema XOR
-
-
-Abrir archivo index en el navegaro. Favor de revisar la consola del navegador para ver los resultados impresos de la ejecución.
+Descripción: Red neuronal multicapa programada en IPython para darle solución al problema XOR
